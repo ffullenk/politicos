@@ -36,3 +36,7 @@ gem 'jquery-rails'
 
 # To use debugger
 # gem 'debugger'
+
+gem "less-rails", ">= 2.2.6", :group => :assets
+gem "twitter-bootstrap-rails", ">= 2.1.6", :group => :assets
+gem "therubyracer", ">= 0.10.2", :group => :assets, :platform => :ruby
