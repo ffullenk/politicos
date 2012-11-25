@@ -1,0 +1,98 @@
+ <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+              <li class="nav-header">Región</li> 
+             <div class="control-group">
+               
+                <div class="controls">
+
+                     <% if(@render_diputados) %>
+                <%= select_tag "region_id", options_from_collection_for_select(@regiones, "id", "nombre", {:class => 'dropdown-toggle'}), :prompt => "Seleccione Region", :onchange => "update_distritos_div(this.value)" %>
+              
+               <%end %>
+
+                 <% if(@render_senadores) %>
+                <%= select_tag "region_id", options_from_collection_for_select(@regiones, "id", "nombre", {:class => 'dropdown-toggle'}), :prompt => "Seleccione Region", :onchange => "update_circunscripcion_div(this.value)" %>
+              
+               <%end %>
+
+              <% if(@render_todos) %>
+                <%= select_tag "region_id", options_from_collection_for_select(@regiones, "id", "nombre", {:class => 'dropdown-toggle'}), :prompt => "Seleccione Region" %>
+              
+               <%end %>
+
+
+
+                </div>
+
+
+         
+            <% if(@render_diputados) %>
+              <li class="nav-header">Distrito</li>
+              <div class="controls">
+
+              <div id="distritosDiv">
+                  <%= render :partial => 'home/distritos', :object => @distritos %>
+              </div>
+              </div>
+
+               <%end %>
+
+              <% if(@render_senadores) %>
+
+               <li class="nav-header">Circunscripción</li>
+            <div class="controls">
+
+              <div id="circunscripcionDiv">
+                  <%= render :partial => 'home/circunscripciones', :object => @circunscripciones %>
+              </div>
+            </div>
+              <%end %>
+
+              <li class="nav-header">Año</li>
+              <div class="controls">
+                <%= select_year(Date.today, :start_year => 1990, :end_year => 2012, :prompt => 'Seleccione año') %>
+              </div>
+
+              
+             
+            
+
+              <div class="controls">
+            <button type="button" class="btn btn-primary">Buscar</button>
+
+             </div>
+              </ul>
+              </div>
+          </div><!--/.well -->
+
+
+<script>
+
+          
+function update_distritos_div(region_id) {  
+  jQuery.ajax({
+    url: "/update_distritos",
+    type: "GET",
+    data: {"region_id" : region_id},
+    dataType: "html",
+    success: function(data) {
+      jQuery("#distritosDiv").html(data);
+    }
+  });
+}
+
+function update_circunscripcion_div(region_id) {  
+  jQuery.ajax({
+    url: "/update_circunscripciones",
+    type: "GET",
+    data: {"region_id" : region_id},
+    dataType: "html",
+    success: function(data) {
+      jQuery("#circunscripcionDiv").html(data);
+    }
+  });
+}
+
+
+
+</script>

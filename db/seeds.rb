@@ -5,3 +5,27 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+Circunscripcion.delete_all
+Distrito.delete_all
+Region.delete_all
+
+@region = Region.new
+@region.numero = 1
+@region.nombre= "Arica"
+@region.save
+
+Distrito.create(:region_id => @region.id, :numero => 10)
+Circunscripcion.create(:region_id => @region.id, :numero => 10)
+
+@region = Region.new
+@region.numero = 10
+@region.nombre= "Los Lagos"
+@region.save
+
+Distrito.create(:region_id => @region.id, :numero => 20)
+Circunscripcion.create(:region_id => @region.id, :numero => 20)
+
+
+
+
+

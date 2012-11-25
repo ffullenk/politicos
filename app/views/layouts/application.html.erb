@@ -10,26 +10,48 @@
     <%= yield(:head) %>
   </head>
   <body class="<%= controller_name %> <%= action_name %>">
-    <header class="navbar navbar-fixed-top">
+    <header class="navbar navbar-inverse navbar-fixed-top">
       <nav class="navbar-inner">
         <div class="container">
           <%= render 'layouts/navigation' %>
         </div>
       </nav>
     </header>
+
+
+
+
+
+
     <div id="main" role="main">
-      <div class="container">
-        <div class="content">
-           <div class="row">
-            <div class="span12">
+      <div class="container-fuid">
+        
+           <div class="row-fuid">
+
+             <div class="span3">
+
+
+         <%= render 'layouts/lateral' %>
+
+
+
+        </div><!--/span-->
+
+            <div class="span9">
               <%= render 'layouts/messages' %>
+
+
               <%= yield %>
             </div>
           </div>
           <footer>
-          </footer>
+    <%= yield :scripts %>
+      </footer>
         </div>
-      </div> <!--! end of .container -->
+
     </div> <!--! end of #main -->
+
+
   </body>
 </html>
+

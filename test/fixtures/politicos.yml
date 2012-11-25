@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  latitude: 1.5
+  longitude: 1.5
+  gmaps: false
+  foto: MyString
+  anio: 1
+  profesion: MyString
+  circunscripcion_id: 1
+  distrito_id: 1
+
+two:
+  latitude: 1.5
+  longitude: 1.5
+  gmaps: false
+  foto: MyString
+  anio: 1
+  profesion: MyString
+  circunscripcion_id: 1
+  distrito_id: 1

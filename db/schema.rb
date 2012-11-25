@@ -11,6 +11,42 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 0) do
+ActiveRecord::Schema.define(:version => 20121124170444) do
+
+  create_table "circunscripcions", :force => true do |t|
+    t.string   "numero"
+    t.string   "region_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "distritos", :force => true do |t|
+    t.string   "numero"
+    t.string   "region_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "politicos", :force => true do |t|
+    t.float    "latitude"
+    t.float    "longitude"
+    t.boolean  "gmaps"
+    t.string   "foto"
+    t.integer  "anio"
+    t.string   "profesion"
+    t.integer  "circunscripcion_id"
+    t.integer  "distrito_id"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+    t.boolean  "senador"
+    t.boolean  "diputado"
+  end
+
+  create_table "regions", :force => true do |t|
+    t.string   "nombre"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+    t.integer  "numero"
+  end
 
 end
