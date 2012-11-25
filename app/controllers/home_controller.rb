@@ -61,7 +61,7 @@ class HomeController < ApplicationController
 end
   def index
 
-    #cargar_datos
+    cargar_datos
 
   	@regiones = Region.all
     @distritos = Distrito.all
