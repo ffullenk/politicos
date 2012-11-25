@@ -1,0 +1,17 @@
+---
+applications:
+  .:
+    name: politicos
+    framework:
+      name: rails3
+      info:
+        mem: 256M
+        description: Rails Application
+        exec: 
+    infra: rs
+    url: ${name}.${target-base}
+    mem: 256M
+    instances: 1
+    services:
+      politicos-mysql-65062:
+        type: mysql
