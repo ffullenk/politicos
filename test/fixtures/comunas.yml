@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  nombre: 
+  region_id: 1
+  circunscripcion: 1
+  distrito_id: 1
+
+two:
+  nombre: 
+  region_id: 1
+  circunscripcion: 1
+  distrito_id: 1

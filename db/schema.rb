@@ -11,20 +11,32 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121124170444) do
+ActiveRecord::Schema.define(:version => 20121125190807) do
 
   create_table "circunscripcions", :force => true do |t|
     t.string   "numero"
     t.string   "region_id"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+    t.string   "nombre"
+  end
+
+  create_table "comunas", :force => true do |t|
+    t.string   "nombre"
+    t.integer  "region_id"
+    t.integer  "circunscripcion_id"
+    t.integer  "distrito_id"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
   end
 
   create_table "distritos", :force => true do |t|
     t.string   "numero"
     t.string   "region_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+    t.integer  "circunscripcion_id"
+    t.string   "nombre"
   end
 
   create_table "politicos", :force => true do |t|
