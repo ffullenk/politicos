@@ -36,25 +36,11 @@ class HomeController < ApplicationController
   details.each do |dato|
 
 
-      region = Region.find_or_create_by_nombre(dato[0])
-      circunscripcion = Circunscripcion.find_or_create_by_nombre(dato[1])
-      distrito = Distrito.find_or_create_by_nombre(dato[2])
-      comuna = Comuna.find_or_create_by_nombre(dato[3])
+      region = Region.find_or_create_by_nombre(:nombre =>dato[0])
+      circunscripcion = Circunscripcion.find_or_create_by_nombre(:nombre => dato[1], :region_id =>region.id)
+      distrito = Distrito.find_or_create_by_nombre(:nombre=>dato[2], :circunscripcion_id=>circunscripcion.id, :region_id=>region.id)
+      comuna = Comuna.find_or_create_by_nombre(:nombre=>dato[3],:region_id=>region.id, :circunscripcion_id=>circunscripcion.id, :distrito_id=>distrito.id)
 
-      comuna.region = region
-      comuna.distrito = distrito
-      comuna.circunscripcion = circunscripcion
-
-      distrito.region = region
-      distrito.circunscripcion = circunscripcion
-
-      circunscripcion.region = region
-
-      comuna.save
-      distrito.save
-      circunscripcion.save
-
-      p "guardando dato"
 
   end
 
