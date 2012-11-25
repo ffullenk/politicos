@@ -39,7 +39,7 @@ class HomeController < ApplicationController
       region = Region.find_or_create_by_nombre(:nombre =>dato[0])
       circunscripcion = Circunscripcion.find_or_create_by_nombre(:nombre => dato[1], :region_id =>region.id)
       distrito = Distrito.find_or_create_by_nombre(:nombre=>dato[2], :circunscripcion_id=>circunscripcion.id, :region_id=>region.id)
-      comuna = Comuna.find_or_create_by_nombre(:nombre=>dato[3],:region_id=>region.id, :circunscripcion_id=>circunscripcion.id, :distrito_id=>distrito.id)
+      #comuna = Comuna.find_or_create_by_nombre(:nombre=>dato[3],:region_id=>region.id, :circunscripcion_id=>circunscripcion.id, :distrito_id=>distrito.id)
 
 
   end
