@@ -12,7 +12,7 @@
               	<%@senadores.each_with_index do| senador, index| %>
                 <tr>
                   <td><%=index+1 %></td>
-                  <td><%= senador.nombre %></td>
+                  <td><%= link_to senador.nombre, senador.link, :target => "_blank" %></td>
                   <td><%= Circunscripcion.find_by_id(senador.circunscripcion_id).nombre %></td>
                    <td><%= senador.anio %> - <%= senador.aniofin %> </td>
                  

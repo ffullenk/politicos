@@ -31,6 +31,7 @@ class HomeController < ApplicationController
   #Distrito.delete_all
   #Circunscripcion.delete_all
   #Region.delete_all
+  Politico.delete_all
   
   details.each do |dato|
 
@@ -203,7 +204,7 @@ def carga_diputados
 
 
 #Diputados
- url="http://datos.bcn.cl/sparql?default-graph-uri=&query=SELECT+DISTINCT+%3Fnombre+%3Flugar+%3FbeginningYear+%3FendYear+%3Fcargo+%3Ffoto+WHERE%7B%0D%0A%3Fcargo+a+bcnbio%3ADiputado+.%0D%0A%3Fperson+bcnbio%3AhasParliamentaryAppointment+%3Fa+.%0D%0A%3Fperson+foaf%3Aname+%3Fnombre+.%0D%0A%3Fperson+foaf%3Adepiction+%3Ffoto.%0D%0A%3Fa+bcnbio%3AhasPosition+%3Fcargo+.%0D%0A%3Fa+bcnbio%3ArepresentingPlaceNamed+%3Flugar+.%0D%0A%3Fa+a+bcnbio%3APositionPeriod+.%0D%0A%3Fa+bcnbio%3AhasBeginning+%3Fbeginning+.%0D%0A%3Fa+bcnbio%3AhasEnd+%3Fend+.%0D%0A%3Fbeginning+time%3Ayear+%3FbeginningYear+.%0D%0A%3Fend+time%3Ayear+%3FendYear%0D%0AFILTER+%28%3FbeginningYear+%3E+1989%29.+%0D%0A%7D%0D%0AORDER+BY+DESC%28%3FbeginningYear+%29&format=text%2Fhtml&timeout=0&debug=on"
+ url="http://datos.bcn.cl/sparql?default-graph-uri=&query=SELECT+DISTINCT+%3Fnombre+%3Flugar+%3FbeginningYear+%3FendYear+%3Ffoto+%3Flink+WHERE%7B%0D%0A%3Fcargo+a+bcnbio%3ADiputado+.%0D%0A%3Fperson+bcnbio%3AhasParliamentaryAppointment+%3Fa+.%0D%0A%3Fperson+foaf%3Aname+%3Fnombre+.%0D%0A%3Fperson+foaf%3Adepiction+%3Ffoto.%0D%0A%3Fa+bcnbio%3AhasPosition+%3Fcargo+.%0D%0A%3Fa+bcnbio%3ArepresentingPlaceNamed+%3Flugar+.%0D%0A%3Fa+a+bcnbio%3APositionPeriod+.%0D%0A%3Fa+bcnbio%3AhasBeginning+%3Fbeginning+.%0D%0A%3Fa+bcnbio%3AhasEnd+%3Fend+.%0D%0A%3Fbeginning+time%3Ayear+%3FbeginningYear+.%0D%0A%3Fend+time%3Ayear+%3FendYear+.%0D%0A%3Fperson+foaf%3AisPrimaryTopicOf+%3Flink.%0D%0AFILTER+%28%3FbeginningYear+%3E+1989%29.%0D%0AFILTER+regex%28%3Flink%2C%22historia%22%29.%0D%0A%0D%0A%7D%0D%0AORDER+BY+DESC%28%3FbeginningYear+%29%0D%0A&format=text%2Fhtml&timeout=0&debug=on"
 
 doc = Nokogiri::XML(open(url))
 doc.encoding = 'utf-8'
@@ -218,8 +219,8 @@ detail = {}
  [:lugar, 'td[2]/text()'],
  [:beginningYear, 'td[3]/text()'],
  [:endYear, 'td[4]/text()'],
- [:cargo, 'td[5]/text()'],
- [:foto, 'td[6]/text()'],
+ [:foto, 'td[5]/text()'],
+ [:link, 'td[6]/text()'],
 ].collect do |name, xpath|
 
 detail[name] = row.at_xpath(xpath).to_s.strip
@@ -241,7 +242,7 @@ distrito = Distrito.find(:all, :conditions => ["nombre like ?", like]).first
 unless distrito.nil? 
 politico = Politico.find_or_create_by_nombre_and_anio(
   :nombre => row[0], :diputado=> true, :senador=>false,
-   :foto=> row[5], :anio=>row[2],:aniofin=>row[3], :distrito_id=> distrito.id);
+   :foto=> row[4],:link=>row[5], :anio=>row[2],:aniofin=>row[3], :distrito_id=> distrito.id);
 end
 end
 end
@@ -251,7 +252,7 @@ def carga_senadores
 
 
 #Senadores
- url="http://datos.bcn.cl/sparql?default-graph-uri=&query=SELECT+DISTINCT+%3Fnombre+%3Flugar+%3FbeginningYear+%3FendYear+%3Fcargo+%3Ffoto+WHERE%7B%0D%0A%3Fcargo+a+bcnbio%3ASenador+.%0D%0A%3Fperson+bcnbio%3AhasParliamentaryAppointment+%3Fa+.%0D%0A%3Fperson+foaf%3Aname+%3Fnombre+.%0D%0A%3Fperson+foaf%3Adepiction+%3Ffoto.%0D%0A%3Fa+bcnbio%3AhasPosition+%3Fcargo+.%0D%0A%3Fa+bcnbio%3ArepresentingPlaceNamed+%3Flugar+.%0D%0A%3Fa+a+bcnbio%3APositionPeriod+.%0D%0A%3Fa+bcnbio%3AhasBeginning+%3Fbeginning+.%0D%0A%3Fa+bcnbio%3AhasEnd+%3Fend+.%0D%0A%3Fbeginning+time%3Ayear+%3FbeginningYear+.%0D%0A%3Fend+time%3Ayear+%3FendYear%0D%0AFILTER+%28%3FbeginningYear+%3E+1989%29.+%0D%0A%7D%0D%0AORDER+BY+DESC%28%3FbeginningYear+%29&format=text%2Fhtml&timeout=0&debug=on"
+ url="http://datos.bcn.cl/sparql?default-graph-uri=&query=SELECT+DISTINCT+%3Fnombre+%3Flugar+%3FbeginningYear+%3FendYear+%3Ffoto+%3Flink+WHERE%7B%0D%0A%3Fcargo+a+bcnbio%3ASenador+.%0D%0A%3Fperson+bcnbio%3AhasParliamentaryAppointment+%3Fa+.%0D%0A%3Fperson+foaf%3Aname+%3Fnombre+.%0D%0A%3Fperson+foaf%3Adepiction+%3Ffoto.%0D%0A%3Fa+bcnbio%3AhasPosition+%3Fcargo+.%0D%0A%3Fa+bcnbio%3ArepresentingPlaceNamed+%3Flugar+.%0D%0A%3Fa+a+bcnbio%3APositionPeriod+.%0D%0A%3Fa+bcnbio%3AhasBeginning+%3Fbeginning+.%0D%0A%3Fa+bcnbio%3AhasEnd+%3Fend+.%0D%0A%3Fbeginning+time%3Ayear+%3FbeginningYear+.%0D%0A%3Fend+time%3Ayear+%3FendYear+.%0D%0A%3Fperson+foaf%3AisPrimaryTopicOf+%3Flink.%0D%0AFILTER+%28%3FbeginningYear+%3E+1989%29.%0D%0AFILTER+regex%28%3Flink%2C%22historia%22%29.%0D%0A%0D%0A%7D%0D%0AORDER+BY+DESC%28%3FbeginningYear+%29&format=text%2Fhtml&timeout=0&debug=on"
  doc = Nokogiri::XML(open(url))
 doc.encoding = 'utf-8'
 
@@ -265,8 +266,8 @@ detail = {}
  [:lugar, 'td[2]/text()'],
  [:beginningYear, 'td[3]/text()'],
  [:endYear, 'td[4]/text()'],
- [:cargo, 'td[5]/text()'],
- [:foto, 'td[6]/text()'],
+ [:foto, 'td[5]/text()'],
+ [:link, 'td[6]/text()']
 ].collect do |name, xpath|
 
 detail[name] = row.at_xpath(xpath).to_s.strip
@@ -289,7 +290,7 @@ circunscripcion = Circunscripcion.find(:all, :conditions => ["nombre like ?", li
 unless circunscripcion.nil? 
 politico = Politico.find_or_create_by_nombre_and_anio(
   :nombre => row[0], :diputado=> false, :senador=>true,
-   :foto=> row[5], :anio=>row[2],:aniofin=>row[3], :circunscripcion_id=> circunscripcion.id);
+   :foto=> row[4],:link=> row[5], :anio=>row[2],:aniofin=>row[3], :circunscripcion_id=> circunscripcion.id);
 end
 end
 
@@ -308,7 +309,7 @@ end
 
 
   def index
-
+    
     cargar_datos
     carga_diputados
     carga_senadores

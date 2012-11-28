@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121128055255) do
+ActiveRecord::Schema.define(:version => 20121128195622) do
 
   create_table "circunscripcions", :force => true do |t|
     t.string   "numero"
@@ -57,6 +57,7 @@ ActiveRecord::Schema.define(:version => 20121128055255) do
     t.boolean  "diputado"
     t.integer  "aniofin"
     t.string   "nombre"
+    t.string   "link"
   end
 
   create_table "regions", :force => true do |t|

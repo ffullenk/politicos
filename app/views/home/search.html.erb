@@ -15,7 +15,7 @@
               	<%@politicos.each_with_index do| politico, index| %>
                 <tr>
                   <td><%=index+1 %></td>
-                  <td><%= politico.nombre %></td>
+                  <td><%= link_to politico.nombre, politico.link, :target => "_blank" %></td>
                   <% if (politico.diputado?) %>
                   	<td><%= Distrito.find_by_id(politico.distrito_id).nombre %></td>
                   	<%end%>
