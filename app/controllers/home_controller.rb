@@ -27,7 +27,7 @@ class HomeController < ApplicationController
   details.shift
   
 
-  #Comuna.delete_all
+  Comuna.delete_all
   #Distrito.delete_all
   #Circunscripcion.delete_all
   #Region.delete_all
