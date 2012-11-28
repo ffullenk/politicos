@@ -1,4 +1,5 @@
 <%= gmaps4rails(@json) %>
 
-
+<%if (@senadores.size >0) %>
 <%= render 'tablesenadores' %>
+<%end%>
