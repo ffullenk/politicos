@@ -15,7 +15,7 @@ ActiveRecord::Schema.define(:version => 20121128195622) do
 
   create_table "circunscripcions", :force => true do |t|
     t.string   "numero"
-    t.string   "region_id"
+    t.integer   "region_id"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
     t.string   "nombre"
@@ -35,7 +35,7 @@ ActiveRecord::Schema.define(:version => 20121128195622) do
 
   create_table "distritos", :force => true do |t|
     t.string   "numero"
-    t.string   "region_id"
+    t.integer   "region_id"
     t.datetime "created_at",         :null => false
     t.datetime "updated_at",         :null => false
     t.integer  "circunscripcion_id"
