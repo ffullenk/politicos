@@ -28,10 +28,10 @@ class HomeController < ApplicationController
   details.shift
   
 
-  Comuna.delete_all
-  Distrito.delete_all
-  Circunscripcion.delete_all
-  Region.delete_all
+  #Comuna.delete_all
+  #Distrito.delete_all
+  #Circunscripcion.delete_all
+  #Region.delete_all
   
   details.each do |dato|
 
@@ -39,20 +39,127 @@ class HomeController < ApplicationController
       region = Region.find_or_create_by_nombre(:nombre =>dato[0])
       circunscripcion = Circunscripcion.find_or_create_by_nombre(:nombre => dato[1], :region_id =>region.id)
       distrito = Distrito.find_or_create_by_nombre(:nombre=>dato[2], :circunscripcion_id=>circunscripcion.id, :region_id=>region.id)
-      #comuna = Comuna.find_or_create_by_nombre(:nombre=>dato[3],:region_id=>region.id, :circunscripcion_id=>circunscripcion.id, :distrito_id=>distrito.id)
+      comuna = Comuna.find_or_create_by_nombre(:nombre=>dato[3],:region_id=>region.id, :circunscripcion_id=>circunscripcion.id, :distrito_id=>distrito.id)
 
 
   end
 
+
+
+
+
 end
+
+def carga_diputados
+
+
+
+#Diputados
+ url="http://datos.bcn.cl/sparql?default-graph-uri=&query=SELECT+DISTINCT+%3Fnombre+%3Flugar+%3FbeginningYear+%3FendYear+%3Fcargo+%3Ffoto+WHERE%7B%0D%0A%3Fcargo+a+bcnbio%3ADiputado+.%0D%0A%3Fperson+bcnbio%3AhasParliamentaryAppointment+%3Fa+.%0D%0A%3Fperson+foaf%3Aname+%3Fnombre+.%0D%0A%3Fperson+foaf%3Adepiction+%3Ffoto.%0D%0A%3Fa+bcnbio%3AhasPosition+%3Fcargo+.%0D%0A%3Fa+bcnbio%3ArepresentingPlaceNamed+%3Flugar+.%0D%0A%3Fa+a+bcnbio%3APositionPeriod+.%0D%0A%3Fa+bcnbio%3AhasBeginning+%3Fbeginning+.%0D%0A%3Fa+bcnbio%3AhasEnd+%3Fend+.%0D%0A%3Fbeginning+time%3Ayear+%3FbeginningYear+.%0D%0A%3Fend+time%3Ayear+%3FendYear%0D%0AFILTER+%28%3FbeginningYear+%3E+1989%29.+%0D%0A%7D%0D%0AORDER+BY+DESC%28%3FbeginningYear+%29&format=text%2Fhtml&timeout=0&debug=on"
+
+doc = Nokogiri::XML(open(url))
+doc.encoding = 'utf-8'
+
+# Search for nodes by xpath
+#puts doc.xpath('//entry').at_xpath("summary").content
+
+details = doc.search('//tr').collect do |row|
+detail = {}
+[
+ [:nombre, 'td[1]/text()'],
+ [:lugar, 'td[2]/text()'],
+ [:beginningYear, 'td[3]/text()'],
+ [:endYear, 'td[4]/text()'],
+ [:cargo, 'td[5]/text()'],
+ [:foto, 'td[6]/text()'],
+].collect do |name, xpath|
+
+detail[name] = row.at_xpath(xpath).to_s.strip
+end
+
+#p detail
+end
+details.shift
+#p details
+
+details.each do |row|
+
+numero = row[1].scan(/\d/).join
+p numero
+
+like = "% " + numero.to_s
+
+distrito = Distrito.find(:all, :conditions => ["nombre like ?", like]).first
+unless distrito.nil? 
+politico = Politico.find_or_create_by_nombre_and_anio(
+  :nombre => row[0], :diputado=> true, :senador=>false,
+   :foto=> row[5], :anio=>row[2],:aniofin=>row[3], :distrito_id=> distrito.id);
+end
+end
+end
+
+def carga_senadores
+
+
+
+#Senadores
+ url="http://datos.bcn.cl/sparql?default-graph-uri=&query=SELECT+DISTINCT+%3Fnombre+%3Flugar+%3FbeginningYear+%3FendYear+%3Fcargo+%3Ffoto+WHERE%7B%0D%0A%3Fcargo+a+bcnbio%3ASenador+.%0D%0A%3Fperson+bcnbio%3AhasParliamentaryAppointment+%3Fa+.%0D%0A%3Fperson+foaf%3Aname+%3Fnombre+.%0D%0A%3Fperson+foaf%3Adepiction+%3Ffoto.%0D%0A%3Fa+bcnbio%3AhasPosition+%3Fcargo+.%0D%0A%3Fa+bcnbio%3ArepresentingPlaceNamed+%3Flugar+.%0D%0A%3Fa+a+bcnbio%3APositionPeriod+.%0D%0A%3Fa+bcnbio%3AhasBeginning+%3Fbeginning+.%0D%0A%3Fa+bcnbio%3AhasEnd+%3Fend+.%0D%0A%3Fbeginning+time%3Ayear+%3FbeginningYear+.%0D%0A%3Fend+time%3Ayear+%3FendYear%0D%0AFILTER+%28%3FbeginningYear+%3E+1989%29.+%0D%0A%7D%0D%0AORDER+BY+DESC%28%3FbeginningYear+%29&format=text%2Fhtml&timeout=0&debug=on"
+ doc = Nokogiri::XML(open(url))
+doc.encoding = 'utf-8'
+
+# Search for nodes by xpath
+#puts doc.xpath('//entry').at_xpath("summary").content
+
+details = doc.search('//tr').collect do |row|
+detail = {}
+[
+ [:nombre, 'td[1]/text()'],
+ [:lugar, 'td[2]/text()'],
+ [:beginningYear, 'td[3]/text()'],
+ [:endYear, 'td[4]/text()'],
+ [:cargo, 'td[5]/text()'],
+ [:foto, 'td[6]/text()'],
+].collect do |name, xpath|
+
+detail[name] = row.at_xpath(xpath).to_s.strip
+end
+
+#p detail
+end
+details.shift
+#p details
+
+details.each do |row|
+
+numero = row[1].scan(/\d/).join
+p numero
+
+like = "% " + numero.to_s
+
+circunscripcion = Circunscripcion.find(:all, :conditions => ["nombre like ?", like]).first
+
+unless circunscripcion.nil? 
+politico = Politico.find_or_create_by_nombre_and_anio(
+  :nombre => row[0], :diputado=> false, :senador=>true,
+   :foto=> row[5], :anio=>row[2],:aniofin=>row[3], :circunscripcion_id=> circunscripcion.id);
+end
+end
+
+
+
+
+end
+
   def index
 
     cargar_datos
+    carga_diputados
+    carga_senadores
 
   	@regiones = Region.all
     @distritos = Distrito.all
      @render_todos = true
-     @json = Politico.all.to_gmaps4rails
+    # @json = Politico.all.to_gmaps4rails
 
     
     
