@@ -109,7 +109,7 @@ def search
   @render_todos= true
 
   if(region.nil?)
-   flash[:error] = "Selecccione una región."
+   flash[:error] = "Seleccione una región."
    redirect_to root_path
    return
   else
