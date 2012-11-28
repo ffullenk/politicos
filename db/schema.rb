@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121128045823) do
+ActiveRecord::Schema.define(:version => 20121128055255) do
 
   create_table "circunscripcions", :force => true do |t|
     t.string   "numero"
@@ -28,6 +28,9 @@ ActiveRecord::Schema.define(:version => 20121128045823) do
     t.integer  "distrito_id"
     t.datetime "created_at",         :null => false
     t.datetime "updated_at",         :null => false
+    t.float    "latitude"
+    t.float    "longitude"
+    t.boolean  "gmaps"
   end
 
   create_table "distritos", :force => true do |t|

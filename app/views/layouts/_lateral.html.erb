@@ -1,5 +1,18 @@
  <div class="well sidebar-nav">
             <ul class="nav nav-list">
+              <% if(@render_senadores) %>
+                <%= form_tag(:controller => "home", :action => "searchsenadores", :method => "post")%>
+             <% end %>
+
+               <% if (@render_diputados)%>
+               <%=  form_tag(:controller => "home", :action => "searchdiputados", :method => "post")%>
+             <% end %>
+
+              <% if(@render_todos)%>
+                <%=   form_tag(:controller => "home", :action => "search", :method => "post")%>
+
+              <%end%>
+
               <li class="nav-header">Región</li> 
              <div class="control-group">
                
@@ -50,7 +63,7 @@
 
               <li class="nav-header">Año</li>
               <div class="controls">
-                <%= select_year(Date.today, :start_year => 1990, :end_year => 2012, :prompt => 'Seleccione año') %>
+                <%= select_year(Date.today, :start_year => 1990, :end_year => 2012) %>
               </div>
 
               
@@ -58,8 +71,8 @@
             
 
               <div class="controls">
-            <button type="button" class="btn btn-primary">Buscar</button>
-
+         
+              <%= submit_tag "Buscar", :class => "btn btn-primary" %>
              </div>
               </ul>
               </div>

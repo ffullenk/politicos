@@ -7,5 +7,8 @@ Politicos::Application.routes.draw do
 
    match '/diputados' => 'home#diputados', :as => :diputados
    match '/senadores' => 'home#senadores', :as => :senadores
+   match '/home/searchsenadores' => 'home#searchsenadores', :as => :searchsenadores
+   match '/home/searchdiputados' => 'home#searchdiputados', :as => :searchdiputados
+   match '/home/search' => 'home#search', :as => :search
 
 end

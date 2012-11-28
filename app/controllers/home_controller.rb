@@ -1,5 +1,4 @@
-
-# encoding: UTF-8
+# encoding: utf-8
 class HomeController < ApplicationController
 
 
@@ -39,8 +38,12 @@ class HomeController < ApplicationController
       region = Region.find_or_create_by_nombre(:nombre =>dato[0])
       circunscripcion = Circunscripcion.find_or_create_by_nombre(:nombre => dato[1], :region_id =>region.id)
       distrito = Distrito.find_or_create_by_nombre(:nombre=>dato[2], :circunscripcion_id=>circunscripcion.id, :region_id=>region.id)
-      comuna = Comuna.find_or_create_by_nombre(:nombre=>dato[3],:region_id=>region.id, :circunscripcion_id=>circunscripcion.id, :distrito_id=>distrito.id)
+      
+      if validaComuna(dato[3])
 
+       comuna = Comuna.find_or_create_by_nombre(:nombre=>dato[3]+", Chile",:region_id=>region.id, 
+        :circunscripcion_id=>circunscripcion.id, :distrito_id=>distrito.id)
+    end
 
   end
 
@@ -49,6 +52,151 @@ class HomeController < ApplicationController
 
 
 end
+
+def searchsenadores
+
+  region = Region.find_by_id(params[:region_id])
+  circunscripcion = Circunscripcion.find_by_id(params[:circunscripcion_id])
+  anio = params[:date][:year]
+  comunasIds = Array.new
+
+ 
+
+  if !circunscripcion.nil?
+    @senadores = Politico.where("circunscripcion_id = ? AND senador = ? AND diputado = ? AND anio <= ? AND aniofin >= ? ", circunscripcion.id, true,false,anio, anio)
+    else
+       @senadores = Politico.where("senador = ? AND diputado = ? AND anio <= ? AND aniofin >= ?",true,false,anio,anio)
+    
+  end
+
+  @senadores.each do |senador|
+     
+       
+    circunscripcion = Circunscripcion.find_by_id(senador.circunscripcion_id)
+       
+       circunscripcion.comunas.each do |comuna|
+          comunasIds.push(comuna.id)
+       end
+   
+
+  end
+
+
+  @comunas = Comuna.find_all_by_id(comunasIds)
+  @json = @comunas.to_gmaps4rails
+
+  if comunasIds.size.eql? 0
+   flash[:notice] = "No se encontraron resultados para la búsqueda."
+ else
+    flash[:notice] = "Se encontraron "+@senadores.size.to_s + " resultados."
+ end
+  @render_senadores = true
+  @regiones = Region.all
+  @circunscripciones = Circunscripcion.all
+
+end
+
+
+def search
+
+  region = Region.find_by_id(params[:region_id])
+  circunscripcion = Circunscripcion.find_by_id(params[:circunscripcion_id])
+  distrito = Distrito.find_by_id(params[:distrito_id])
+
+  anio = params[:date][:year]
+  comunasIds = Array.new
+  @render_todos= true
+
+  if(region.nil?)
+   flash[:error] = "Selecccione una región."
+   redirect_to root_path
+   return
+  else
+    @regiones = Region.all
+    distritos = Distrito.find_all_by_region_id(region.id)
+    circunscripciones = Circunscripcion.find_all_by_region_id(region.id)
+    @politicos = Array.new
+
+    distritos.each do |distrito|
+
+      ps = Politico.where("distrito_id= ? AND anio <= ? AND aniofin >= ?",distrito.id,anio,anio)
+      ps.each do |p|
+          @politicos.push(p)
+      end
+      distrito.comunas.each do |comuna|
+      comunasIds.push(comuna.id)
+        end
+
+     
+    end
+
+    circunscripciones.each do |circunscripcion|
+
+      ps = Politico.where("circunscripcion_id= ? AND anio <= ? AND aniofin >= ?",circunscripcion.id,anio,anio)
+       ps.each do |p|
+          @politicos.push(p)
+      end
+       circunscripcion.comunas.each do |comuna|
+          comunasIds.push(comuna.id)
+       end
+    end
+
+    @comunas = Comuna.find_all_by_id(comunasIds)
+    @json = @comunas.to_gmaps4rails
+
+
+   
+    
+
+
+  end
+
+
+end
+
+def searchdiputados
+
+  region = Region.find_by_id(params[:region_id])
+  distrito = Distrito.find_by_id(params[:distrito_id])
+  anio = params[:date][:year]
+  comunasIds = Array.new
+
+ 
+
+  if !distrito.nil?
+    @diputados = Politico.where("distrito_id = ? AND senador = ? AND diputado = ? AND anio <= ? AND aniofin >= ? ", distrito.id, false,true,anio, anio)
+    else
+       @diputados = Politico.where("senador = ? AND diputado = ? AND anio <= ? AND aniofin >= ?",false,true,anio,anio)
+    
+  end
+
+  @diputados.each do |diputado|
+     
+       
+    distrito = Distrito.find_by_id(diputado.distrito_id)
+       
+       distrito.comunas.each do |comuna|
+          comunasIds.push(comuna.id)
+       end
+   
+
+  end
+
+  p comunasIds
+
+  @comunas = Comuna.find_all_by_id(comunasIds)
+  @json = @comunas.to_gmaps4rails
+
+  if comunasIds.size.eql? 0
+   flash[:notice] = "No se encontraron resultados para la búsqueda."
+ else
+    flash[:notice] = "Se encontraron "+@diputados.size.to_s + " resultados."
+ end
+  @render_diputados = true
+  @regiones = Region.all
+  @distritos = Distrito.all
+end
+
 
 def carga_diputados
 
@@ -85,7 +233,7 @@ details.shift
 details.each do |row|
 
 numero = row[1].scan(/\d/).join
-p numero
+
 
 like = "% " + numero.to_s
 
@@ -150,6 +298,15 @@ end
 
 end
 
+
+def validaComuna(nombreComuna)
+ciudades = ["Arica","Iquique","Calama","Antofagasta","Copiapó","Caldera","La Serena","Coquimbo","Los Vilos","Quillota","Los Andes","Quilpué","Valparaíso","Viña Del Mar","Casablanca","Pudahuel","Renca","Quinta Normal","Independencia","Estación Central","Santiago","Buin","Melipilla","Providencia","Las Condes","La Reina","San Joaquín","La Florida","La Cisterna","Pedro Aguirre Cerda","Puente Alto","Rancagua","Rengo","San Vicente","Pichilemu","Curicó","Talca","Maule","Linares","Cauquenes","Yumbel","Talcahuano","Concepción","Coronel","Chillán","Arauco","Los Ángeles","Traiguén","Victoria","Temuco","Pitrufquén","Villarica","Valdivia","Los Lagos","Osorno","Puerto Varas","Puerto Montt","Castro","O'higgins","Punta Arenas"]
+
+return ciudades.include? nombreComuna
+
+end
+
+
   def index
 
     cargar_datos
@@ -159,7 +316,7 @@ end
   	@regiones = Region.all
     @distritos = Distrito.all
      @render_todos = true
-    # @json = Politico.all.to_gmaps4rails
+    @json = Comuna.all.to_gmaps4rails
 
     
     
@@ -183,15 +340,51 @@ end
     @render_senadores = true
     @regiones = Region.all
     @circunscripciones = Circunscripcion.all
-    @json = Politico.where(:senador => true).to_gmaps4rails
+    @senadores = Politico.where(:senador => true)
+    comunasIds= Array.new
+
+    @senadores.each do |senador|
+       circunscripcion = Circunscripcion.find_by_id(senador.circunscripcion_id)
+       
+       circunscripcion.comunas.each do |comuna|
+          comunasIds.push(comuna.id)
+       end
+   
+
+    end
+
+    @comunas = Comuna.find_all_by_id(comunasIds)
+
+
+   
+
+    @json = @comunas.to_gmaps4rails
   end
 
   def diputados
 
      @render_diputados = true
-     @regiones = Region.all
+    @regiones = Region.all
     @distritos = Distrito.all
-     @json = Politico.where(:diputado => true).to_gmaps4rails
+    @diputados = Politico.where(:diputado => true)
+    comunasIds= Array.new
+
+    @diputados.each do |diputado|
+       distrito = Distrito.find_by_id(diputado.distrito_id)
+       
+       distrito.comunas.each do |comuna|
+          comunasIds.push(comuna.id)
+       end
+   
+
+    end
+
+    @comunas = Comuna.find_all_by_id(comunasIds)
+
+
+   
+
+    @json = @comunas.to_gmaps4rails
   end
 
 

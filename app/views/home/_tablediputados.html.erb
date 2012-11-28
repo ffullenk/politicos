@@ -1,0 +1,23 @@
+<table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Nombre diputado</th>
+                  <th>Distrito</th>
+                  <th>Periodo</th>
+
+                </tr>
+              </thead>
+              <tbody>
+              	<%@diputados.each_with_index do| diputado, index| %>
+                <tr>
+                  <td><%=index+1 %></td>
+                  <td><%= diputado.nombre %></td>
+                  <td><%= Distrito.find_by_id(diputado.distrito_id).nombre %></td>
+                   <td><%= diputado.anio %> - <%= diputado.aniofin %> </td>
+                 
+                </tr>
+               <%end%>
+              </tbody>
+            </table>
+            

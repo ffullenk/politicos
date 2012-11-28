@@ -1,0 +1,33 @@
+<%= gmaps4rails(@json) %>
+
+
+<table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Nombre político</th>
+                  <th>Lugar</th>
+                  <th>Periodo</th>
+
+                </tr>
+              </thead>
+              <tbody>
+              	<%@politicos.each_with_index do| politico, index| %>
+                <tr>
+                  <td><%=index+1 %></td>
+                  <td><%= politico.nombre %></td>
+                  <% if (politico.diputado?) %>
+                  	<td><%= Distrito.find_by_id(politico.distrito_id).nombre %></td>
+                  	<%end%>
+
+                  	<% if(politico.senador?) %>
+                  		<td><%= Circunscripcion.find_by_id(politico.circunscripcion_id).nombre %></td>
+
+                  		<%end%>
+                   <td><%= politico.anio %> - <%= politico.aniofin %> </td>
+                 
+                </tr>
+               <%end%>
+              </tbody>
+            </table>
+            

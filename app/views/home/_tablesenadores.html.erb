@@ -1,0 +1,22 @@
+<table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Nombre senador</th>
+                  <th>Circunscripción</th>
+                  <th>Periodo</th>
+
+                </tr>
+              </thead>
+              <tbody>
+              	<%@senadores.each_with_index do| senador, index| %>
+                <tr>
+                  <td><%=index+1 %></td>
+                  <td><%= senador.nombre %></td>
+                  <td><%= Circunscripcion.find_by_id(senador.circunscripcion_id).nombre %></td>
+                   <td><%= senador.anio %> - <%= senador.aniofin %> </td>
+                 
+                </tr>
+               <%end%>
+              </tbody>
+            </table>
