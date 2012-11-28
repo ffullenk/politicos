@@ -1,0 +1,38 @@
+
+
+ <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+    <script>
+      function initialize() {
+
+        var australia = new google.maps.LatLng(-33.45722, -70.65685);
+
+        map = new google.maps.Map(document.getElementById('map_canvas'), {
+          center: australia,
+          zoom: 5,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+
+        layer = new google.maps.FusionTablesLayer({
+          query: {
+            select: 'geometry',
+            from: '1ARZf4GumXYSLIrbfBEfs9AMlWPKExYMZngtkATg'
+          },
+          styles: [{
+            polygonOptions: {
+              fillColor: '#00FF00',
+              fillOpacity: 0.3
+            }
+          }, {
+            where: '<%= @opcion %> = <%= @id %>',
+            polygonOptions: {
+              fillColor: '#0000FF'
+            }
+          }]
+        });
+        layer.setMap(map);
+      }
+    </script>
+  </head>
+  <body onload="initialize()">
+    <div id="map_canvas" style="height: 700px; width: 1100px; margin: 15px"></div>
+  </body>

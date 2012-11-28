@@ -13,22 +13,30 @@
 
               <%end%>
 
-              <li class="nav-header">Región</li> 
+               <% if(@render_distritos || @render_circunscripcion)%>
+                <%=   form_tag(:controller => "home", :action => "searchlayers", :method => "post")%>
+
+              <%end%>
+
+              
              <div class="control-group">
                
                 <div class="controls">
 
                      <% if(@render_diputados) %>
+                     <li class="nav-header">Región</li> 
                 <%= select_tag "region_id", options_from_collection_for_select(@regiones, "id", "nombre", {:class => 'dropdown-toggle'}), :prompt => "Seleccione Region", :onchange => "update_distritos_div(this.value)" %>
               
                <%end %>
 
                  <% if(@render_senadores) %>
+                 <li class="nav-header">Región</li> 
                 <%= select_tag "region_id", options_from_collection_for_select(@regiones, "id", "nombre", {:class => 'dropdown-toggle'}), :prompt => "Seleccione Region", :onchange => "update_circunscripcion_div(this.value)" %>
               
                <%end %>
 
               <% if(@render_todos) %>
+              <li class="nav-header">Región</li> 
                 <%= select_tag "region_id", options_from_collection_for_select(@regiones, "id", "nombre", {:class => 'dropdown-toggle'}), :prompt => "Seleccione Region" %>
               
                <%end %>
@@ -50,6 +58,18 @@
 
                <%end %>
 
+
+               <% if(@render_distritos) %>
+              <li class="nav-header">Distrito</li>
+              <div class="controls">
+
+              <div id="distritosDiv">
+                  <%= render :partial => 'home/distritos', :object => @distritos %>
+              </div>
+              </div>
+
+               <%end %>
+
               <% if(@render_senadores) %>
 
                <li class="nav-header">Circunscripción</li>
@@ -61,13 +81,27 @@
             </div>
               <%end %>
 
+
+               <% if(@render_circunscripcion) %>
+
+               <li class="nav-header">Circunscripción</li>
+            <div class="controls">
+
+              <div id="circunscripcionDiv">
+                  <%= render :partial => 'home/circunscripciones', :object => @circunscripciones %>
+              </div>
+            </div>
+              <%end %>
+
+              <% if( @render_senadores || @render_diputados) %>
+
               <li class="nav-header">Año</li>
               <div class="controls">
                 <%= select_year(Date.today, :start_year => 1990, :end_year => 2012) %>
               </div>
 
               
-             
+             <%end %>
             
 
               <div class="controls">

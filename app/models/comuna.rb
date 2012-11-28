@@ -12,4 +12,9 @@ def geocode?
   (!nombre.blank? && (latitude.blank? || longitude.blank?)) || nombre_changed?
 end
 
+def gmaps4rails_title
+     nombre
+    end
+
+
 end

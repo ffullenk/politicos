@@ -198,6 +198,56 @@ def searchdiputados
   @distritos = Distrito.all
 end
 
+def layersdistritos
+
+  @opcion = "DIS_ELEC"
+  @id = 51
+
+
+  @distritos = Distrito.all
+  @circunscripciones = Circunscripcion.all
+  @render_distritos = true
+
+  render "layers"
+end
+
+
+def layerscircunscripciones
+
+  @opcion = "CIR_SENA"
+  @id = 12
+
+    @distritos = Distrito.all
+  @circunscripciones = Circunscripcion.all
+  @render_circunscripcion = true
+render "layers"
+end
+
+
+def searchlayers
+
+  if params[:distrito_id]
+
+      
+  @opcion = "DIS_ELEC"
+  @id = Distrito.find_by_id(params[:distrito_id]).nombre.scan(/\d/).join
+  @render_distritos =true
+  end
+
+
+  if params[:circunscripcion_id]
+      @opcion = "CIR_SENA"
+      @id = Circunscripcion.find_by_id(params[:circunscripcion_id]).nombre.scan(/\d/).join
+      @render_circunscripcion = true
+  end
+
+
+
+  @distritos = Distrito.all
+  @circunscripciones = Circunscripcion.all
+  @render_layers = true
+
+end
 
 def carga_diputados
 
