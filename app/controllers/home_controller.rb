@@ -31,7 +31,7 @@ class HomeController < ApplicationController
   #Distrito.delete_all
   #Circunscripcion.delete_all
   #Region.delete_all
-  Politico.delete_all
+  #Politico.delete_all
   
   details.each do |dato|
 
